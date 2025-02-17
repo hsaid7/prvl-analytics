@@ -1,0 +1,64 @@
+services:
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: db_user
+      POSTGRES_PASSWORD: db_password
+      POSTGRES_DB: dbt_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres/data:/var/lib/postgresql/data
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U db_user -d postgres"]
+      interval: 5s
+      timeout: 300s
+      retries: 5
+      start_period: 5s
+    networks:
+      - backend
+
+
+  airflow:
+    build:
+      context: ./airflow
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./scripts:/scripts
+      - ./data:/data
+      - ./dbt:/opt/airflow/dbt
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://db_user:db_password@postgres/airflow_db
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: db_user
+    networks:
+      - backend
+  metabase:
+    image: metabase/metabase:latest
+    container_name: metabase
+    depends_on:
+      - postgres
+    ports:
+      - "3000:3000"
+    environment:
+      # Metabase stores its metadata in a separate DB named "metabase"
+      MB_DB_TYPE: postgres
+      MB_DB_DBNAME: metabase
+      MB_DB_USER: metabase_user
+      MB_DB_PASS: metabase_password
+      MB_DB_HOST: postgres
+      MB_DB_PORT: '5432'
+    networks:
+      - backend
+
+networks:
+  backend:

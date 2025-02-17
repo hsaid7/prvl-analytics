@@ -1,0 +1,21 @@
+name: 'venue_usage_project'
+version: '1.0'
+profile: 'venue_usage_profile'
+
+config-version: 2
+
+macro-paths: ["macros"]
+test-paths: ["tests"]
+
+
+models:
+  venue_usage_project:
+    staging:
+      +schema: staging
+
+    marts:
+      +schema: analytics
+
+    dims:
+      +schema: analytics
+

@@ -1,0 +1,29 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+
+# Database files
+postgres_data/
+
+# Airflow logs
+airflow/logs/
+
+# DBT artifacts
+dbt/target/
+dbt/dbt_modules/
+dbt/dbt_packages/
+dbt/logs/
+
+# Python logs
+*.log
+
+# VSCode settings
+.vscode/
+
+postgres/data
+dbt/.user.yml
+dbt/package-lock.yml

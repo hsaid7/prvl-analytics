@@ -1,0 +1,89 @@
+version: 2
+
+sources:
+  - name: raw
+    database: dbt_db
+    schema: raw
+    tables:
+
+      - name: fct_venue_register
+        description: "User check-in / check-out logs"
+        columns:
+          - name: _id
+            tests:
+              - not_null
+          - name: user_id
+            tests:
+              - not_null
+          - name: venue_id
+            tests:
+              - not_null
+          - name: created_at
+            tests:
+              - not_null
+          - name: event_timestamp
+            tests:
+              - not_null
+          - name: event_name
+            tests:
+              - not_null
+              - accepted_values:
+                  values: ['enter', 'leave']
+          - name: event_triggered_by
+            tests:
+              - not_null
+          - name: event_type
+            tests:
+              - not_null
+              - accepted_values:
+                  values: ['scan','venue','manual','auto','location','system']
+
+      - name: fct_venue_daily_policies
+        description: "Venue-level daily policy definitions"
+        columns:
+          - name: date
+            tests:
+              - not_null
+          - name: partner_id
+            tests:
+              - not_null
+          - name: venue_id
+            tests:
+              - not_null
+          - name: access_distribution
+            tests:
+              - not_null
+              - accepted_values:
+                  values: ['per-venue','across-locations']
+          - name: venue_type
+            tests:
+              - not_null
+          - name: is_revolving
+            tests:
+              - not_null
+
+      - name: fct_venue_daily_capacity
+        description: "Daily capacity for venues with allocated capacity"
+        columns:
+          - name: date
+            tests:
+              - not_null
+          - name: venue_id
+            tests:
+              - not_null
+          - name: capacity_adults
+            tests:
+              - not_null
+
+      - name: fct_partner_daily_capacity
+        description: "Daily partner-level capacity for shared capacity"
+        columns:
+          - name: date
+            tests:
+              - not_null
+          - name: partner_id
+            tests:
+              - not_null
+          - name: capacity_adults
+            tests:
+              - not_null
