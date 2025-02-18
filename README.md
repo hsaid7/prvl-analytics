@@ -129,6 +129,8 @@ Verify that the `fact_daily_usage` table is created in Postgres, including colum
 
 - The result has daily usage stats:
   - unique_checkins, total_checkins, peak_usage, capacity_utilization, excess_usage, etc.
+- **Dummy Names**: For clarity in reporting, dummy names have been created for venues and partners (populated via `dim_venues` and `dim_partners`). This allows users to easily identify and compare partner and venue performance.
+
   
 For the specific SQL logic, see the Notion page (final query snippet).
 
